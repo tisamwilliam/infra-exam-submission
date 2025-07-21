@@ -1,9 +1,5 @@
 
----
-
 # Helm Deployment & Diagnostic Guide for Spring Boot App
-
----
 
 ## 第一步：驗證應用架構
 
@@ -18,8 +14,6 @@
 * 應用不依賴外部服務、憑證或其他執行期相依元件
 
 * Helm chart 中 `values.yaml` 有正確設定映像位置與 tag
-
----
 
 ## 第二步：Helm Template 渲染驗證
 
@@ -36,8 +30,6 @@ helm install spring-problem ./java-app -n default --dry-run --debug
 * 無 YAML 語法或渲染錯誤
 * 所有 Kubernetes 資源皆有正確產出，參數帶入無誤
 * 映像、環境變數、埠號、資源限制等皆正確套用
-
----
 
 ## 第三步：部署至叢集
 
@@ -71,8 +63,6 @@ helm install spring-problem ./charts/java-app -n default -f ./charts/java-app/va
   curl http://<cluster-ip>:80/hello
   curl https://<ingress-fqdn>/hello
   ```
-
----
 
 ## 第四步：異常處理與觀測
 
@@ -109,5 +99,3 @@ helm install spring-problem ./charts/java-app -n default -f ./charts/java-app/va
   ```
 
 * 告警系統或日誌收集器應能反映 probe 失敗與 thread block 的行為
-
----
