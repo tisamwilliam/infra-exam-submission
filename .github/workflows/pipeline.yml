@@ -73,10 +73,10 @@ jobs:
           version: v3.13.0
 
       - name: Helm lint
-        run: helm lint charts/java-app
+        run: helm lint charts
 
       - name: Helm template dry-run
         run: |
-          helm template test charts/java-app \
+          helm template test charts \
             --set image.repository=${{ env.IMAGE_NAME }} \
             --set image.tag=latest
