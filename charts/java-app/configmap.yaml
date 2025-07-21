@@ -1,0 +1,16 @@
+{{- if and .Values.jvmExporter.enabled .Values.jvmExporter.crdInstall }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jmx-config
+  labels:
+    app.kubernetes.io/name: {{ include "platform-homework.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  jmx-config.yaml: |-
+    ssl: false
+    lowercaseOutputName: false
+    lowercaseOutputLabelNames: false
+    rules:
+      - pattern: ".*"
+{{- end }}

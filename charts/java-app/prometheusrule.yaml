@@ -1,0 +1,18 @@
+{{- if and .Values.jvmExporter.enabled .Values.jvmExporter.crdInstall }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: java-threads-alert
+spec:
+  groups:
+    - name: java-thread-alerts
+      rules:
+        - alert: HighBlockedThreadCount
+          expr: jvm_threads_state{state="BLOCKED"} > 10
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High number of blocked threads on {{ $labels.instance }}"
+            description: "More than 10 threads are in BLOCKED state for over 2 minutes.\nCurrent value: {{ $value }}"
+{{- end }}

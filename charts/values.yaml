@@ -1,0 +1,40 @@
+image:
+  repository: ghcr.io/tisamwilliam/spring-hello-problem
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+gracePeriod: 20
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: java-app.ocp.olg.online.com
+      paths:
+        - path: /hello
+          pathType: Prefix
+  tls: []
+
+probes:
+  enabled: true
+
+jvmExporter:
+  enabled: true
+  crdInstall: true
+  image:
+    repository: ghcr.io/tisamwilliam/jmx-exporter
+    tag: "1.0.0"

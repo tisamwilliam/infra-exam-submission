@@ -1,0 +1,23 @@
+{{- if and .Values.jvmExporter.enabled .Values.jvmExporter.crdInstall }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "platform-homework.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "platform-homework.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "platform-homework.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: jmx
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s
+{{- end }}
