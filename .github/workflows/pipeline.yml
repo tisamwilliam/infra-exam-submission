@@ -87,7 +87,7 @@ jobs:
 
   helm-validate:
     runs-on: ubuntu-latest
-    needs: build-and-push
+    needs: push-images
 
     steps:
       - name: Checkout code
