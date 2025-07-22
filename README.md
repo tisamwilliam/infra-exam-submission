@@ -5,10 +5,10 @@
 
 * `Dockerfile` 可正確建置映像檔，程式碼路徑、Base image與相依套件可以正常拉取
 
-```bash
-cd docker/spring-hello-problem/
-docker build -t ghcr.io/tisamwillaim/spring-hello-problem:1.0.0 -f Dockerfile .
-```
+  ```bash
+  cd docker/spring-hello-problem/
+  docker build -t ghcr.io/tisamwillaim/spring-hello-problem:1.0.0 -f Dockerfile .
+  ```
 
 * 確認是否引用外部服務、憑證或相依元件
 
@@ -30,7 +30,7 @@ helm lint charts
 部署應用至 Kubernetes：
 
 ```bash
-helm install spring-problem charts/java-app -n default -f ./charts/java-app/values.yaml
+helm install spring-problem charts -n default -f charts/values.yaml
 ```
 
 驗證執行時行為：

@@ -49,19 +49,19 @@ spec:
             httpGet:
               path: /hello
               port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          timeoutSeconds: 2
-          failureThreshold: 3
-          successThreshold: 1
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+            successThreshold: 1
           livenessProbe:
             httpGet:
               path: /hello
               port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 20
-          timeoutSeconds: 3
-          failureThreshold: 5
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 5
           {{- end }}
           env:
             {{- if .Values.jvmExporter.enabled }}
