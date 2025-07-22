@@ -10,7 +10,7 @@ env:
   IMAGE_TAG: 1.0.0
 
 jobs:
-  build-images:
+  build-and-push-images:
     runs-on: ubuntu-latest
     outputs:
       IMAGE_NAME: ${{ env.IMAGE_NAME }}
@@ -23,6 +23,12 @@ jobs:
       IMAGE_TAG: 1.0.0
       JMX_IMAGE_NAME: ghcr.io/tisamwilliam/jmx-exporter
       JMX_IMAGE_TAG: 1.0.0
+
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
 
     steps:
       - name: Checkout source code
@@ -58,22 +64,6 @@ jobs:
           docker tag $JMX_IMAGE_NAME:$JMX_IMAGE_TAG $JMX_IMAGE_NAME:latest
         working-directory: docker/jmx-exporter
 
-  push-images:
-    runs-on: ubuntu-latest
-    needs: build-images
-    env:
-      IMAGE_NAME: ghcr.io/tisamwilliam/spring-hello-problem
-      IMAGE_TAG: 1.0.0
-      JMX_IMAGE_NAME: ghcr.io/tisamwilliam/jmx-exporter
-      JMX_IMAGE_TAG: 1.0.0
-
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
-
-    steps:
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -93,7 +83,7 @@ jobs:
 
   helm-validate:
     runs-on: ubuntu-latest
-    needs: push-images
+    needs: build-and-push-images
 
     steps:
       - name: Checkout code
