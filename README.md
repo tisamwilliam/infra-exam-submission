@@ -17,7 +17,7 @@
 使用 Helm 執行 dry-run 測試：
 
 ```bash
-helm template charts -f charts/values.yaml
+helm template charts -f charts/java-app/values.yaml
 helm lint charts
 ```
 
@@ -30,7 +30,7 @@ helm lint charts
 部署應用至 Kubernetes：
 
 ```bash
-helm install spring-problem charts -n default -f charts/values.yaml
+helm install spring-problem charts -n default -f charts/java-app/values.yaml
 ```
 
 驗證執行時行為：
