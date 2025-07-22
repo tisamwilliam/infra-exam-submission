@@ -3,29 +3,24 @@
 
 ## 第一步：驗證應用架構
 
-在部署前，請確認以下項目：
+* `Dockerfile` 可正確建置映像檔，程式碼路徑、Base image與相依套件可以正常拉取
 
-* `Dockerfile` 可正確建置映像檔，並已與應用原始碼、基底映像與相依套件對齊
+```bash
+cd docker/spring-hello-problem/
+docker build -t ghcr.io/tisamwillaim/spring-hello-problem:1.0.0 -f Dockerfile .
+```
 
-  ```bash
-  docker build -t ghcr.io/tisamwillaim/spring-hello-problem:1.0.0 -f docker/spring-hello-problem/Dockerfile .
-  ```
-
-* 應用不依賴外部服務、憑證或其他執行期相依元件
-
-* Helm chart 中 `values.yaml` 有正確設定映像位置與 tag
+* 確認是否引用外部服務、憑證或相依元件
 
 ## 第二步：Helm Template 渲染驗證
 
 使用 Helm 執行 dry-run 測試：
 
 ```bash
-helm template ./java-app -f values.yaml
-helm lint ./java-app
-helm install spring-problem ./java-app -n default --dry-run --debug
+helm template charts -f values.yaml
+helm lint charts
+helm install spring-problem charts -n default --dry-run --debug
 ```
-
-確認：
 
 * 無 YAML 語法或渲染錯誤
 * 所有 Kubernetes 資源皆有正確產出，參數帶入無誤
@@ -33,7 +28,7 @@ helm install spring-problem ./java-app -n default --dry-run --debug
 
 ## 第三步：部署至叢集
 
-使用以下指令部署應用至 Kubernetes：
+部署應用至 Kubernetes：
 
 ```bash
 helm install spring-problem ./charts/java-app -n default -f ./charts/java-app/values.yaml
