@@ -17,9 +17,8 @@ docker build -t ghcr.io/tisamwillaim/spring-hello-problem:1.0.0 -f Dockerfile .
 使用 Helm 執行 dry-run 測試：
 
 ```bash
-helm template charts -f values.yaml
+helm template charts -f charts/values.yaml
 helm lint charts
-helm install spring-problem charts -n default --dry-run --debug
 ```
 
 * 無 YAML 語法或渲染錯誤
@@ -31,14 +30,14 @@ helm install spring-problem charts -n default --dry-run --debug
 部署應用至 Kubernetes：
 
 ```bash
-helm install spring-problem ./charts/java-app -n default -f ./charts/java-app/values.yaml
+helm install spring-problem charts/java-app -n default -f ./charts/java-app/values.yaml
 ```
 
-然後驗證執行時行為：
+驗證執行時行為：
 
 * Pod 的 readiness 與 liveness probe 檢查通過
 
-* Volume 掛載正常、檔案系統權限可用：
+* Volume 掛載正常、檔案系統權限可用
 
   ```bash
   kubectl exec <pod-name> -- touch /java-dump/test-file
