@@ -40,7 +40,7 @@ helm install spring-problem charts -n default -f charts/values.yaml
 * Volume 掛載正常、檔案系統權限可用
 
   ```bash
-  kubectl exec <pod-name> -- touch /java-dump/test-file
+  kubectl exec <pod-name> -- sh -c "touch /java-dump/test-file; ls /java-dump"
   ```
 
 * `/hello` API 回應正常：
@@ -52,44 +52,20 @@ helm install spring-problem charts -n default -f charts/values.yaml
 * Service 與 Ingress 有正確暴露應用：
 
   ```bash
-  kubectl get svc
-  kubectl get ingress
   curl http://<cluster-ip>:80/hello
   curl https://<ingress-fqdn>/hello
+  ```
+
+* JMX有正常運作：
+
+  ```bash
+  kubectl exec <pod-name> -- curl localhost:9010/metrics
   ```
 
 ## 第四步：異常處理與觀測
 
 當服務無回應時：
 
-* Readiness probe 將會失敗
-* PreStop hook 會被觸發並執行 thread dump 收集（亦可手動刪除 Pod 以驗證）：
-
-  ```yaml
-  lifecycle:
-    preStop:
-      exec:
-        command:
-          - /bin/sh
-          - -c
-          - |
-            PID=$(jps | awk '/.jar/ {print $1}')
-            jstack $PID > /java-dump/$(hostname)-$(date +%s).log
-  ```
-
-確認觀測系統是否正常運作：
-
-* 可透過 Prometheus JMX Exporter 收集 JVM 指標：
-
-  ```bash
-  kubectl exec <pod-name> -- curl localhost:9010/metrics
-  ```
-
-* Thread dump 已寫入至 `/java-dump` volume，並可檢視：
-
-  ```bash
-  kubectl exec <pod-name> -- ls /java-dump/
-  kubectl exec <pod-name> -- cat /java-dump/<dump-file-name>
-  ```
-
-* 告警系統或日誌收集器應能反映 probe 失敗與 thread block 的行為
+* Readiness probe 將會失敗，異常Pod的服務會中斷，並透過Liveness Probe重啟節點
+* PreStop hook 會被觸發並執行 thread dump 收集，可以連線到節點內部搜集，或是使用另外一個Pod掛載共用相同PVC，將Dump取出
+* Prometheus中的metrics透過prometheusrule發出告警
